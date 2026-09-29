@@ -43,14 +43,15 @@ Cuéntalo primero como historia, no como comandos: el `informe_final_v2_AHORA_SI
 - **Convención de Snakode desde el commit número uno:** mensajes en español con formato `tipo: descripción`.
   `feat: agregar registro de equipos` · `fix: corregir cálculo de visitas` · `docs: actualizar bitácora` · `refactor:` · `chore:`
 
-#### Instalar Git — nunca lo ha usado, no te saltes esto
+#### Instalar Git y GitHub CLI — nunca los ha usado, no te saltes esto
 
-No asumas nada: para él hoy Git es una palabra nueva. Instálenlo juntos, igual que hicieron con Python en la semana 1, y que anote cada paso en la bitácora.
+No asumas nada: para él hoy Git es una palabra nueva. Instálenlo juntos, igual que hicieron con Python en la semana 1, y que anote cada paso en la bitácora. Instalen **los dos** de una vez, Git y la GitHub CLI (`gh`), porque el flujo de hoy crea el repositorio en GitHub **desde la terminal**, sin pasar por la página web — así se evita el error más común del día: intentar subir a un repo que no existe todavía del otro lado.
 
-- **Verificar primero si ya está instalado** (en Mac suele venir de fábrica): abrir la terminal y correr `git --version`. Si responde con un número de versión, ya está — pasan directo a configurar. Si dice "command not found" o similar, falta instalarlo.
-- **Windows:** descargar e instalar [Git for Windows](https://git-scm.com/download/win) (deja instalado también "Git Bash", una terminal aparte). Durante la instalación, dejar las opciones por defecto — no hay que tocar nada raro.
-- **Mac:** si el paso anterior no lo encontró, `git --version` en la terminal suele disparar la instalación de las "Herramientas de línea de comandos de Xcode" — aceptar y esperar a que termine. Alternativa si eso falla: instalar con `brew install git` (si ya tienen Homebrew) o desde [git-scm.com](https://git-scm.com/download/mac).
-- **Confirmar que quedó instalado:** de nuevo `git --version` en la terminal — ahora sí debe mostrar un número.
+**Git:**
+- **Verificar primero si ya está instalado** (en Mac suele venir de fábrica): abrir la terminal y correr `git --version`. Si responde con un número de versión, ya está. Si dice "command not found" o similar, falta instalarlo.
+- **Windows:** descargar e instalar [Git for Windows](https://git-scm.com/download/win) (deja instalado también "Git Bash", una terminal aparte). Durante la instalación, dejar las opciones por defecto.
+- **Mac:** si el paso anterior no lo encontró, `git --version` en la terminal suele disparar la instalación de las "Herramientas de línea de comandos de Xcode" — aceptar y esperar a que termine. Alternativa si eso falla: `brew install git` (si ya tienen Homebrew) o desde [git-scm.com](https://git-scm.com/download/mac).
+- **Confirmar:** de nuevo `git --version` — ahora sí debe mostrar un número.
 - **Configurar su identidad (una sola vez, recién instalado):**
   ```
   git config --global user.name "Nombre Apellido"
@@ -58,7 +59,18 @@ No asumas nada: para él hoy Git es una palabra nueva. Instálenlo juntos, igual
   ```
   Explícale qué es esto antes de que lo tipee: es la firma que Git va a pegar en cada commit que haga de aquí en adelante, no un login ni una contraseña.
 
-> **Advertencia de mentor:** igual que con el entorno de Python, si la instalación se tuerce más de 15-20 minutos, no pierdas la sesión ahí. Sigue con la teoría de Git en el pizarrón/pantalla mientras se resuelve en paralelo, y retómalo antes del primer commit — sin Git instalado no hay ejercicio 3 ni 4 posibles hoy.
+**GitHub CLI (`gh`):** es el programa que le va a permitir crear el repositorio en GitHub sin abrir el navegador.
+- **Verificar si ya está:** `gh --version`.
+- **Windows:** `winget install --id GitHub.cli` (o descargar el instalador desde [cli.github.com](https://cli.github.com)).
+- **Mac:** `brew install gh` (si no tiene Homebrew instalado, instálenlo primero desde [brew.sh](https://brew.sh) — es lo mismo que usaron para Git).
+- **Conectar su cuenta (una sola vez):**
+  ```
+  gh auth login
+  ```
+  Le va a preguntar: `GitHub.com` → `HTTPS` → `Login with a web browser`. Le muestra un código, lo copia, se abre el navegador, lo pega y autoriza. Esto reemplaza por completo el tema de contraseñas y tokens manuales — `gh` se encarga de la autenticación de aquí en adelante, tanto para crear repos como para hacer `push`.
+- **Confirmar que quedó conectado:** `gh auth status` — debe decir "Logged in to github.com".
+
+> **Advertencia de mentor:** igual que con el entorno de Python, si alguna instalación se tuerce más de 15-20 minutos, no pierdas la sesión ahí. Sigue con la teoría de Git en el pizarrón/pantalla mientras se resuelve en paralelo, y retómalo antes del primer commit — sin Git y `gh` instalados y conectados no hay ejercicio 3 ni 4 posibles hoy.
 
 #### Los comandos del día, uno por uno
 
@@ -72,10 +84,12 @@ Explícale qué problema resuelve cada uno, no solo la sintaxis:
 | `git add archivo.py` (o `git add .` para todo) | Pasa cambios al **área de preparación** (*staging*). No guarda nada todavía — es elegir qué va a entrar en la próxima foto. |
 | `git commit -m "tipo: descripción"` | Toma una **foto** (snapshot) de lo que está en el área de preparación y la guarda en el historial, para siempre. |
 | `git log` | Muestra el historial de fotos: quién, cuándo y qué mensaje. `git log --oneline` para la versión corta. |
-| `git remote add origin <url>` | Le dice a Git *"la copia de este repositorio en internet está en esta dirección"*. Se hace **una vez** por proyecto. |
-| `git push` | Sube los commits guardados localmente hacia GitHub. |
+| `gh repo create <nombre> --public --source=. --remote=origin --push` | **Crea el repositorio en GitHub desde la terminal** (sin abrir el navegador), lo conecta como `origin` y sube el primer commit, todo en un solo paso. Es el comando clave de hoy. |
+| `git push` | Sube los commits guardados localmente hacia GitHub. Después del primer `gh repo create`, alcanza con esto solo. |
 | `git pull` | Trae cambios desde GitHub hacia el computador. Hoy casi no lo va a usar porque trabaja solo, pero que sepa que existe — es el opuesto de `push`. |
 | `git clone <url>` | Descarga un repositorio completo (con todo su historial) desde GitHub a su computador. Útil cuando el repo ya existe y quiere trabajar sobre él. |
+
+> **Por qué así y no creando el repo en la web:** si crea el repo en GitHub.com y luego intenta conectarlo mal (nombre distinto, usuario mal escrito, o el repo simplemente no existe todavía), `git push` falla con `remote: Repository not found`. Es el error más común de esta sesión. `gh repo create ... --push` elimina ese paso manual: crea y conecta en un solo comando, sin margen para el typo entre la web y la terminal.
 
 > **No enseñes ramas hoy.** Van en la semana 10, cuando tengan un motivo real. Hoy: guardar historia y subirla, nada más.
 
@@ -85,7 +99,7 @@ Este es el flujo que va a repetir toda su carrera. Hazlo juntos una vez, en vivo
 
 **1. Preparar GitHub (una vez, si no tiene cuenta)**
 - Crear cuenta en [github.com](https://github.com).
-- En GitHub, botón **New repository**: ponerle nombre (`bitacora-practica`), dejarlo público, **sin** marcar "Add a README" (para evitar un conflicto al hacer el primer push desde una carpeta que ya tiene archivos).
+- Con eso alcanza — **no hace falta crear el repositorio en la página**. Lo va a crear desde la terminal en el paso 5, con `gh`.
 
 **2. Iniciar el repositorio local**
 ```
@@ -115,16 +129,14 @@ git commit -m "feat: iniciar proyecto de inventario de equipos"
 git log --oneline
 ```
 
-**5. Conectar con GitHub y subir**
-En la página del repo recién creado, GitHub le muestra la URL (`https://github.com/usuario/bitacora-practica.git`). Con eso:
+**5. Crear el repositorio en GitHub y subir, en un solo comando**
 ```
 git branch -M main
-git remote add origin https://github.com/usuario/bitacora-practica.git
-git push -u origin main
+gh repo create bitacora-practica --public --source=. --remote=origin --push
 ```
-El `-u` (de *upstream*) solo se usa esa primera vez: le dice a Git que de ahora en adelante `origin main` es el destino por defecto. Después de eso, con `git push` a secas alcanza.
+Esto crea `bitacora-practica` en su cuenta de GitHub, lo conecta como `origin` y sube el commit — todo junto. Después de esta primera vez, con `git push` a secas alcanza para subir lo nuevo.
 
-> **Autenticación:** GitHub ya no acepta la contraseña de la cuenta al hacer `push` desde la terminal. Va a pedir un *Personal Access Token* (se genera en GitHub → Settings → Developer settings → Personal access tokens) o, si prefieres, configurar SSH. No lo dejes para el final del día — resuélvanlo apenas hagan el primer `push`, porque si no se traba ahí y pierden tiempo.
+> **Si algo falla acá:** lo más probable es que `gh auth status` no esté logueado (volver al paso de instalación y correr `gh auth login`), o que ya exista un repo con ese nombre en su cuenta (usar otro nombre, o agregar `--confirm` si quiere sobreescribir la conexión). Casi nunca va a ver el error `Repository not found` con este flujo, porque `gh` crea el repo antes de intentar subir — ese error solo aparece cuando alguien crea el repo a mano en la web y comete un typo al conectar con `git remote add`.
 
 **6. El ciclo de todos los días de aquí en adelante**
 ```
