@@ -91,7 +91,7 @@ Explícale qué problema resuelve cada uno, no solo la sintaxis:
 
 > **Por qué así y no creando el repo en la web:** si crea el repo en GitHub.com y luego intenta conectarlo mal (nombre distinto, usuario mal escrito, o el repo simplemente no existe todavía), `git push` falla con `remote: Repository not found`. Es el error más común de esta sesión. `gh repo create ... --push` elimina ese paso manual: crea y conecta en un solo comando, sin margen para el typo entre la web y la terminal.
 
-> **No enseñes ramas hoy.** Van en la semana 10, cuando tengan un motivo real. Hoy: guardar historia y subirla, nada más.
+> **Ramas (`branches`), solo de nombre hoy:** una rama es una línea de historia paralela — permite tener versiones distintas del código al mismo tiempo sin que se pisen. Todo lo que ha hecho hasta ahora vive en una sola rama, la principal (`main`). Coméntaselo en una frase si pregunta qué es `main`, pero **no enseñes a crear ni cambiar de rama hoy** — eso va en la semana 10, cuando trabaje junto a otros y tenga un motivo real para necesitarlas. Hoy: guardar historia y subirla, nada más.
 
 #### Cómo crear y subir un proyecto desde cero — paso a paso
 
@@ -134,7 +134,7 @@ git log --oneline
 git branch -M main
 gh repo create bitacora-practica --public --source=. --remote=origin --push
 ```
-Esto crea `bitacora-practica` en su cuenta de GitHub, lo conecta como `origin` y sube el commit — todo junto. Después de esta primera vez, con `git push` a secas alcanza para subir lo nuevo.
+`git branch -M main` solo renombra la rama principal a `main` (por si `git init` la dejó como `master`, el nombre viejo) — no está creando una rama nueva, es la única que va a tener hoy. Después, `gh repo create ...` crea `bitacora-practica` en su cuenta de GitHub, lo conecta como `origin` y sube el commit — todo junto. Desde esta primera vez, con `git push` a secas alcanza para subir lo nuevo.
 
 > **Si algo falla acá:** lo más probable es que `gh auth status` no esté logueado (volver al paso de instalación y correr `gh auth login`), o que ya exista un repo con ese nombre en su cuenta (usar otro nombre, o agregar `--confirm` si quiere sobreescribir la conexión). Casi nunca va a ver el error `Repository not found` con este flujo, porque `gh` crea el repo antes de intentar subir — ese error solo aparece cuando alguien crea el repo a mano en la web y comete un typo al conectar con `git remote add`.
 
